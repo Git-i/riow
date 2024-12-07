@@ -5,7 +5,7 @@ mod ray;
 use vec3::Vec3;
 use ray::Ray;
 
-fn ray_color(ray: &Ray) -> Vec3 {
+fn ray_color(ray: Ray) -> Vec3 {
     Vec3::zero()
 }
 fn main() {
@@ -41,12 +41,8 @@ fn main() {
         eprintln!("Lines remaining {}", image_height - j);
         for i in 0..image_width {
             let pixel_position = &first_pixel_world_loc + &(i as f64 * &pixel_du) + (j as f64 * &pixel_dv);
-            let color = Vec3{
-                x: (i as f64 / image_width as f64),
-                y: (j as f64 / image_height as f64),
-                z: 0.0
-            };
-            color.write_as_color(&mut file);
+            let ray = Ray::new(camera_position.clone(), &pixel_position - &camera_position);
+            ray_color(ray).write_as_color(&mut file);
         }
     }
 }

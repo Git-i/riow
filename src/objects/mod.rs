@@ -1,5 +1,6 @@
 pub mod sphere;
 
+
 use crate::{Ray, Vec3};
 
 pub struct HitInfo {
@@ -25,8 +26,10 @@ impl ObjectList {
     }
     pub fn closest_hit(&self, ray: &Ray, tmin: f64, tmax: f64) -> Option<HitInfo> {
         let mut return_value = None;
+        let mut closest = tmax;
         for obj in &self.objects {
-            if let Some(info) = obj.hit(ray, tmin, tmax) {
+            if let Some(info) = obj.hit(ray, tmin, closest) {
+                closest = info.t;
                 return_value = Some(info);
             }
         }

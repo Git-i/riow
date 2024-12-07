@@ -25,6 +25,10 @@ impl Vec3 {
     pub fn zero() -> Self {
         Vec3{ x: 0.0, y: 0.0, z: 0.0}
     }
+    pub fn normalized(self) -> Self {
+        let inv_len = 1.0 / self.len();
+        self * inv_len
+    }
 }
 impl Add for Vec3 {
     type Output = Vec3;

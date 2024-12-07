@@ -23,7 +23,7 @@ impl Hittable for Sphere {
         let root_desc = desc.sqrt();
         let mut t = (h - root_desc) / a;
         if t <= tmin || t >= tmax {
-            t = (h + desc) / a;
+            t = (h + root_desc) / a;
             if t <= tmin || t >= tmax {
                 return None;
             }

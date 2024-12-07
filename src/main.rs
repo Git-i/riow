@@ -7,7 +7,9 @@ use ray::Ray;
 
 fn ray_color(ray: Ray) -> Vec3 {
     let unit_dir = ray.dir.clone().normalized();
-    Vec3::from((0.1, 0.84, 0.22)) * (1.0 - unit_dir.y) + Vec3::from((0.88, 0.9, 0.91)) * unit_dir.y
+    //from -1 - 1 to 0 - 1
+    let a = unit_dir.y * 0.5 + 0.5;
+    Vec3::from((0.1, 0.22, 0.84)) * a + Vec3::from((0.88, 0.9, 0.91)) * (1.0 - a)
 }
 fn main() {
     // Image

@@ -6,13 +6,13 @@ use vec3::Vec3;
 use ray::Ray;
 
 fn hit_sphere(ray: &Ray, sphere_rad: f64, sphere_pos: &Vec3) -> f64 {
-    let a = Vec3::dot(&ray.dir, &ray.dir);
+    let a = ray.dir.sq_len();
     let pos_minus_origin = sphere_pos - &ray.origin;
-    let b = -2.0 * Vec3::dot(&ray.dir, &pos_minus_origin);
-    let c = Vec3::dot(&pos_minus_origin, &pos_minus_origin) - sphere_rad * sphere_rad;
-    let desc = b * b - 4.0 * a * c;
+    let h = Vec3::dot(&ray.dir, &pos_minus_origin);
+    let c = pos_minus_origin.sq_len() - sphere_rad * sphere_rad;
+    let desc = h * h - a * c;
     if desc >= 0.0 {
-        (-b - desc.sqrt()) / 2.0 * a
+        (h - desc.sqrt()) / a
     } else {
         -1.0
     }

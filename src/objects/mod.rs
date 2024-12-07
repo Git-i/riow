@@ -1,7 +1,7 @@
 pub mod sphere;
 
 
-use crate::{Ray, Vec3};
+use crate::{interval::Interval, Ray, Vec3};
 
 pub struct HitInfo {
     pub t: f64,
@@ -10,7 +10,7 @@ pub struct HitInfo {
     pub front_face: bool
 }
 pub trait Hittable {
-    fn hit(&self, ray:&Ray, tmin: f64, tmax: f64) -> Option<HitInfo>;
+    fn hit(&self, ray: &Ray, tbounds: Interval) -> Option<HitInfo>;
 }
 
 pub struct ObjectList {
@@ -24,12 +24,11 @@ impl ObjectList {
     pub fn add(&mut self, obj: Box<dyn Hittable>) {
         self.objects.push(obj);
     }
-    pub fn closest_hit(&self, ray: &Ray, tmin: f64, tmax: f64) -> Option<HitInfo> {
+    pub fn closest_hit(&self, ray: &Ray, mut tbounds: Interval) -> Option<HitInfo> {
         let mut return_value = None;
-        let mut closest = tmax;
         for obj in &self.objects {
-            if let Some(info) = obj.hit(ray, tmin, closest) {
-                closest = info.t;
+            if let Some(info) = obj.hit(ray, tbounds.clone()) {
+                tbounds = tbounds.right_rebind(info.t);
                 return_value = Some(info);
             }
         }

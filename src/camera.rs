@@ -1,6 +1,6 @@
 use std::io::{Write, BufWriter};
 
-use crate::{objects::ObjectList, ray::Ray, vec3::Vec3};
+use crate::{interval::Interval, objects::ObjectList, ray::Ray, vec3::Vec3};
 
 pub struct Camera {
     pixel_du: Vec3,
@@ -31,7 +31,7 @@ impl Camera {
         let unit_dir = ray.dir.clone().normalized();
         //from -1 - 1 to 0 - 1
         let a = unit_dir.y * 0.5 + 0.5;
-        if let Some(rec) = world.closest_hit(&ray, 0.0, f64::INFINITY) { 
+        if let Some(rec) = world.closest_hit(&ray, Interval::UNIVERSE.left_rebind(0.0)) { 
             0.5 * &rec.normal + Vec3::from((0.5, 0.5, 0.5))
         } else {
             Vec3::from((0.5, 0.62, 0.84)) * a + Vec3::from((0.88, 0.9, 0.91)) * (1.0 - a)

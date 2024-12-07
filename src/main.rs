@@ -4,7 +4,7 @@ mod vec3;
 mod ray;
 mod objects;
 mod camera;
-
+mod interval;
 
 use objects::{sphere::Sphere, ObjectList};
 use vec3::Vec3;

@@ -1,4 +1,4 @@
-use crate::{Vec3, Ray};
+use crate::{interval::Interval, Ray, Vec3};
 
 use super::{HitInfo, Hittable};
 pub struct Sphere {
@@ -13,7 +13,7 @@ impl Sphere {
     }
 }
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray, tmin: f64, tmax: f64) -> Option<super::HitInfo> {
+    fn hit(&self, ray: &Ray, tbounds: Interval) -> Option<super::HitInfo> {
         let a = ray.dir.sq_len();
         let pos_minus_origin = &self.position - &ray.origin;
         let h = Vec3::dot(&ray.dir, &pos_minus_origin);
@@ -22,9 +22,9 @@ impl Hittable for Sphere {
         if desc < 0.0 { return None; }
         let root_desc = desc.sqrt();
         let mut t = (h - root_desc) / a;
-        if t <= tmin || t >= tmax {
+        if !tbounds.surrounds(t) {
             t = (h + root_desc) / a;
-            if t <= tmin || t >= tmax {
+            if !tbounds.surrounds(t) {
                 return None;
             }
         }

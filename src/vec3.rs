@@ -19,7 +19,7 @@ impl Vec3 {
     pub fn write_as_color<W>(&self, out: &mut BufWriter<W>) 
         where W: std::io::Write
     {
-        out.write_all(format!("{} {} {}\n", (self.x * 256.0) as i32, (self.y * 256.0) as i32, (self.z * 256.0) as i32).as_bytes())
+        out.write_all(format!("{} {} {}\n", (self.x * 255.0) as i32, (self.y * 255.0) as i32, (self.z * 255.0) as i32).as_bytes())
         .unwrap();
     }
     pub fn zero() -> Self {

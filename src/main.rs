@@ -5,11 +5,24 @@ mod ray;
 use vec3::Vec3;
 use ray::Ray;
 
+fn hit_sphere(ray: &Ray, sphere_rad: f64, sphere_pos: &Vec3) -> bool {
+    let a = Vec3::dot(&ray.dir, &ray.dir);
+    let pos_minus_origin = sphere_pos - &ray.origin;
+    let b = -2.0 * Vec3::dot(&ray.dir, &pos_minus_origin);
+    let c = Vec3::dot(&pos_minus_origin, &pos_minus_origin) - sphere_rad * sphere_rad;
+    (b * b - 4.0 * a * c) >= 0.0
+}
+
+
 fn ray_color(ray: Ray) -> Vec3 {
     let unit_dir = ray.dir.clone().normalized();
     //from -1 - 1 to 0 - 1
     let a = unit_dir.y * 0.5 + 0.5;
-    Vec3::from((0.1, 0.22, 0.84)) * a + Vec3::from((0.88, 0.9, 0.91)) * (1.0 - a)
+    if hit_sphere(&ray, 1.0, &(0.0, 0.0, 2.0).into()) {
+        (1.0, 0.0, 0.0).into()
+    } else {
+        Vec3::from((0.5, 0.62, 0.84)) * a + Vec3::from((0.88, 0.9, 0.91)) * (1.0 - a)
+    }
 }
 fn main() {
     // Image

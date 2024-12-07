@@ -19,7 +19,7 @@ impl Hittable for Sphere {
         let h = Vec3::dot(&ray.dir, &pos_minus_origin);
         let c = pos_minus_origin.sq_len() - self.radius * self.radius;
         let desc = h * h - a * c;
-        
+        if desc < 0.0 { return None; }
         let root_desc = desc.sqrt();
         let mut t = (h - root_desc) / a;
         if t <= tmin || t >= tmax {
@@ -32,15 +32,12 @@ impl Hittable for Sphere {
         let mut normal = &position - &self.position;
         let front_face = Vec3::dot(&ray.dir, &normal) < 0.0;
         if !front_face { normal.negate(); }
-        if desc >= 0.0 {
-            Some(HitInfo {
-                t,
-                normal,
-                front_face,
-                position
-            })
-        } else {
-            None
-        }
+        Some(HitInfo {
+            t,
+            normal,
+            front_face,
+            position
+        })
+        
     }
 }

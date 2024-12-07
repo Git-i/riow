@@ -62,6 +62,7 @@ fn main() {
 
     let mut world = ObjectList::new();
     world.add(Box::new(Sphere::new((0.0, 0.0, 2.0).into(), 1.0)));
+    world.add(Box::new(Sphere::new((1.0,0.0,2.0).into(), 100.0)));
     for j in 0..image_height {
         eprintln!("Lines remaining {}", image_height - j);
         for i in 0..image_width {

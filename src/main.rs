@@ -3,6 +3,7 @@ use std::{fs::File, io::{BufWriter, Write}};
 mod vec3;
 mod ray;
 mod objects;
+use objects::{sphere::Sphere, ObjectList};
 use vec3::Vec3;
 use ray::Ray;
 
@@ -20,16 +21,12 @@ fn hit_sphere(ray: &Ray, sphere_rad: f64, sphere_pos: &Vec3) -> f64 {
 }
 
 
-fn ray_color(ray: Ray) -> Vec3 {
+fn ray_color(ray: Ray, world: &ObjectList) -> Vec3 {
     let unit_dir = ray.dir.clone().normalized();
     //from -1 - 1 to 0 - 1
     let a = unit_dir.y * 0.5 + 0.5;
-    let sphere_pos = Vec3::from((0.0, 0.0, 2.0));
-    let sphere_rad = 1.0;
-    let hit_pos = hit_sphere(&ray, sphere_rad, &sphere_pos);
-    if hit_pos > 0.0 { //there was an intersection and it was infront of the camera
-        let normal = (ray.at(hit_pos) - sphere_pos) * (1.0/hit_pos);
-        0.5 * &normal + Vec3::from((0.5, 0.5, 0.5))
+    if let Some(rec) = world.closest_hit(&ray, 0.0, f64::INFINITY) { 
+        0.5 * &rec.normal + Vec3::from((0.5, 0.5, 0.5))
     } else {
         Vec3::from((0.5, 0.62, 0.84)) * a + Vec3::from((0.88, 0.9, 0.91)) * (1.0 - a)
     }
@@ -63,12 +60,14 @@ fn main() {
 
     let first_pixel_world_loc = viewport_upper_left.clone() + 0.5 * &(&pixel_du + &pixel_dv);
 
+    let mut world = ObjectList::new();
+    world.add(Box::new(Sphere::new((0.0, 0.0, 2.0).into(), 1.0)));
     for j in 0..image_height {
         eprintln!("Lines remaining {}", image_height - j);
         for i in 0..image_width {
             let pixel_position = &first_pixel_world_loc + &(i as f64 * &pixel_du) + (j as f64 * &pixel_dv);
             let ray = Ray::new(camera_position.clone(), &pixel_position - &camera_position);
-            ray_color(ray).write_as_color(&mut file);
+            ray_color(ray, &world).write_as_color(&mut file);
         }
     }
 }

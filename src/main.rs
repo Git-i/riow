@@ -6,7 +6,7 @@ use vec3::Vec3;
 use ray::Ray;
 
 fn ray_color(ray: Ray) -> Vec3 {
-    let unit_dir = ray.origin.clone().normalized();
+    let unit_dir = ray.dir.clone().normalized();
     Vec3::from((0.1, 0.84, 0.22)) * (1.0 - unit_dir.y) + Vec3::from((0.88, 0.9, 0.91)) * unit_dir.y
 }
 fn main() {
@@ -25,12 +25,12 @@ fn main() {
     let camera_position = Vec3::zero();
     
     let viewport_u: Vec3 = (viewport_width, 0.0, 0.0).into();
-    let viewport_v: Vec3 = (0.0, viewport_height, 0.0).into();
+    let viewport_v: Vec3 = (0.0, -viewport_height, 0.0).into();
 
     let viewport_upper_left = camera_position.clone() 
         + (0.0, 0.0, focal_length).into()
         - viewport_u.clone() * 0.5
-        + viewport_v.clone() * 0.5;
+        - viewport_v.clone() * 0.5;
     //we trace through the centre pf very pixel
     //pixel du and pixel dv is the distance between pixels on the viewport plane
     let pixel_du = viewport_u.clone() * (1.0 / image_width as f64);

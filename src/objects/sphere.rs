@@ -29,10 +29,14 @@ impl Hittable for Sphere {
             }
         }
         let position = ray.at(t);
+        let mut normal = &position - &self.position;
+        let front_face = Vec3::dot(&ray.dir, &normal) < 0.0;
+        if !front_face { normal.negate(); }
         if desc >= 0.0 {
             Some(HitInfo {
                 t,
-                normal: &position - &self.position,
+                normal,
+                front_face,
                 position
             })
         } else {

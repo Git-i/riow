@@ -29,6 +29,11 @@ impl Vec3 {
         let inv_len = 1.0 / self.len();
         self * inv_len
     }
+    pub fn negate(&mut self) {
+        self.x = -self.x;
+        self.y = -self.y;
+        self.z = -self.z;
+    }
 }
 impl Add for Vec3 {
     type Output = Vec3;

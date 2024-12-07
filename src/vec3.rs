@@ -22,9 +22,19 @@ impl Vec3 {
         out.write_all(format!("{} {} {}\n", (self.x * 256.0) as i32, (self.y * 256.0) as i32, (self.z * 256.0) as i32).as_bytes())
         .unwrap();
     }
+    pub fn zero() -> Self {
+        Vec3{ x: 0.0, y: 0.0, z: 0.0}
+    }
 }
 impl Add for Vec3 {
-    type Output = Self;
+    type Output = Vec3;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Vec3{ x: self.x + rhs.x, y: self.y + rhs.y, z: self.z + rhs.z }
+    }
+}
+impl Add for &Vec3 {
+    type Output = Vec3;
 
     fn add(self, rhs: Self) -> Self::Output {
         Vec3{ x: self.x + rhs.x, y: self.y + rhs.y, z: self.z + rhs.z }
@@ -58,10 +68,15 @@ impl Mul<f64> for Vec3 {
         Vec3{ x: self.x * rhs, y: self.y * rhs, z: self.z * rhs }
     }
 }
-impl Mul<Vec3> for f64 {
+impl Mul<&Vec3> for f64 {
     type Output = Vec3;
 
-    fn mul(self, rhs: Vec3) -> Self::Output {
+    fn mul(self, rhs: &Vec3) -> Self::Output {
         Vec3{ x: rhs.x * self, y: rhs.y * self, z: rhs.z * self }
+    }
+}
+impl From<(f64, f64, f64)> for Vec3 {
+    fn from(value: (f64, f64, f64)) -> Self {
+        Vec3{ x: value.0, y: value.1, z: value.2 }
     }
 }

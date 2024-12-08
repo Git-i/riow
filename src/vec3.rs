@@ -68,6 +68,9 @@ impl Vec3 {
             && f64::abs(self.y) < 1e-8
             && f64::abs(self.z) < 1e-8
     }
+    pub fn reflect(&self, n: &Vec3) -> Vec3 {
+        self + &(-2.0 * Self::dot(self, n) * n)
+    }
 }
 impl Add for Vec3 {
     type Output = Vec3;

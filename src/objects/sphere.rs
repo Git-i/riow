@@ -1,14 +1,15 @@
-use crate::{interval::Interval, Ray, Vec3};
+use crate::{interval::Interval, materials::Material, Ray, Vec3};
 
 use super::{HitInfo, Hittable};
 pub struct Sphere {
     position: Vec3,
-    radius: f64
+    radius: f64,
+    material: Box<dyn Material>
 }
 impl Sphere {
-    pub fn new(position: Vec3, radius: f64) -> Self {
+    pub fn new(position: Vec3, radius: f64, material: Box<dyn Material>) -> Self {
         Sphere{
-            position, radius
+            position, radius, material
         }
     }
 }
@@ -36,7 +37,8 @@ impl Hittable for Sphere {
             t,
             normal,
             front_face,
-            position
+            position,
+            material: self.material.as_ref()
         })
         
     }

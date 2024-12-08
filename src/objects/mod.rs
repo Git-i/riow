@@ -1,13 +1,14 @@
 pub mod sphere;
 
 
-use crate::{interval::Interval, Ray, Vec3};
+use crate::{interval::Interval, materials::Material, Ray, Vec3};
 
-pub struct HitInfo {
+pub struct HitInfo<'a> {
     pub t: f64,
     pub normal: Vec3,
     pub position: Vec3,
-    pub front_face: bool
+    pub front_face: bool,
+    pub material: &'a dyn Material
 }
 pub trait Hittable {
     fn hit(&self, ray: &Ray, tbounds: Interval) -> Option<HitInfo>;

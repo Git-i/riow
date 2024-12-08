@@ -18,13 +18,16 @@ impl Vec3 {
     pub fn dot(lhs: &Self, rhs: &Self) -> f64 {
         lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z
     }
+    fn gamma_correct(x: f64) -> f64 {
+        f64::sqrt(x)
+    }
     pub fn write_as_color<W>(&self, out: &mut BufWriter<W>) 
         where W: std::io::Write
     {
         out.write_all(format!("{} {} {}\n", 
-            (f64::clamp(self.x, 0.0, 1.0) * 255.0) as i32, 
-            (f64::clamp(self.y, 0.0, 1.0) * 255.0) as i32, 
-            (f64::clamp(self.z, 0.0, 1.0) * 255.0) as i32).as_bytes())
+            (Self::gamma_correct(f64::clamp(self.x, 0.0, 1.0)) * 255.0) as i32, 
+            (Self::gamma_correct(f64::clamp(self.y, 0.0, 1.0)) * 255.0) as i32, 
+            (Self::gamma_correct(f64::clamp(self.z, 0.0, 1.0)) * 255.0) as i32).as_bytes())
         .unwrap();
     }
     pub fn zero() -> Self {
@@ -59,6 +62,11 @@ impl Vec3 {
             random.negate();
         }
         random
+    }
+    pub fn is_near_zero(&self) -> bool {
+        f64::abs(self.x) < 1e-8
+            && f64::abs(self.y) < 1e-8
+            && f64::abs(self.z) < 1e-8
     }
 }
 impl Add for Vec3 {

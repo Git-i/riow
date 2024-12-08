@@ -25,9 +25,9 @@ impl Camera {
         let pixel_du = viewport_u.clone() * (1.0 / image_width as f64);
         let pixel_dv = viewport_v.clone() * (1.0/ image_height as f64);
         let viewport_upper_left = position.clone() 
-        + (0.0, 0.0, focal_length).into()
-        - viewport_u.clone() * 0.5
-        - viewport_v.clone() * 0.5;
+            + (0.0, 0.0, focal_length).into()
+            - viewport_u.clone() * 0.5
+            - viewport_v.clone() * 0.5;
         let first_pixel_world_loc = viewport_upper_left.clone() + 0.5 * &(&pixel_du + &pixel_dv);
         Self { 
             pixel_du, 

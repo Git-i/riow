@@ -33,14 +33,19 @@ impl Vec3 {
     pub fn zero() -> Self {
         Vec3{ x: 0.0, y: 0.0, z: 0.0}
     }
-    pub fn normalized(self) -> Self {
+    pub fn normalized(&self) -> Self {
         let inv_len = 1.0 / self.len();
-        self * inv_len
+        inv_len * self
     }
     pub fn negate(&mut self) {
         self.x = -self.x;
         self.y = -self.y;
         self.z = -self.z;
+    }
+    pub fn negated(&self) -> Vec3 {
+        let mut other = self.clone();
+        other.negate();
+        other
     }
     pub fn random(min: f64, max: f64) -> Vec3 {
         let mut rng = thread_rng();
@@ -70,6 +75,13 @@ impl Vec3 {
     }
     pub fn reflect(&self, n: &Vec3) -> Vec3 {
         self + &(-2.0 * Self::dot(self, n) * n)
+    }
+    //I also don't understnad how this works
+    pub fn refract(&self, n: &Vec3, idx: f64) -> Vec3 {
+        let cos_theta = Self::dot(&self.negated(), n).min(1.0);
+        let out_x = (self + &(cos_theta * n)) * idx;
+        let out_y = -(1.0 - out_x.sq_len()).abs().sqrt() * n;
+        out_x + out_y
     }
 }
 impl Add for Vec3 {

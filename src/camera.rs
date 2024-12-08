@@ -15,17 +15,23 @@ pub struct Camera {
     max_depth: u32
 }
 impl Camera {
-    pub fn new(position: Vec3, focal_length: f64, image_width: i32, viewport_height: f64, aspect: f64) -> Self {
+    pub fn new(position: Vec3, focus_point: Vec3, up: Vec3, image_width: i32, fov: f64, aspect: f64) -> Self {
         let image_height = i32::max((image_width as f64 / aspect) as i32, 1);
+        let focal_length = (&focus_point - &position).len();
+        let viewport_height = 2.0 * focal_length * (0.5 * fov.to_radians()).tan();
         let viewport_width = viewport_height * (image_width as f64/image_height as f64);
 
-        let viewport_u: Vec3 = (viewport_width, 0.0, 0.0).into();
-        let viewport_v: Vec3 = (0.0, -viewport_height, 0.0).into();
+        let forward = (&focus_point - &position).normalized();
+        let right = up.cross(&forward).normalized();
+        let actual_up = right.cross(&forward);
+
+        let viewport_u = right * viewport_width;
+        let viewport_v = actual_up * viewport_height;
 
         let pixel_du = viewport_u.clone() * (1.0 / image_width as f64);
         let pixel_dv = viewport_v.clone() * (1.0/ image_height as f64);
         let viewport_upper_left = position.clone() 
-            + (0.0, 0.0, focal_length).into()
+            + forward * focal_length
             - viewport_u.clone() * 0.5
             - viewport_v.clone() * 0.5;
         let first_pixel_world_loc = viewport_upper_left.clone() + 0.5 * &(&pixel_du + &pixel_dv);

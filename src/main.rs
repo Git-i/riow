@@ -14,8 +14,8 @@ use ray::Ray;
 use camera::Camera;
 
 fn main() {
-    let cam = Camera::new(Vec3::zero(), 0.5, 500, 1.5, 1.6)
-        .sample_count(20)
+    let cam = Camera::new((-2.0, 2.0, -1.0).into(), (0.0, 0.0, 1.0).into(), Vec3::UP, 500, 90.0, 1.6)
+        .sample_count(10)
         .recursion_depth(40);
     
     let mut file = BufWriter::new(File::create("output.ppm").unwrap());

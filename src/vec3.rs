@@ -9,6 +9,11 @@ pub struct Vec3 {
     pub z: f64
 }
 impl Vec3 {
+
+    pub fn zero() -> Self {
+        Vec3{ x: 0.0, y: 0.0, z: 0.0}
+    }
+    pub const UP: Vec3 = Vec3{ x: 0.0, y: 1.0, z: 0.0 };
     pub fn sq_len(&self) -> f64 {
         Self::dot(self, self)
     }
@@ -30,9 +35,7 @@ impl Vec3 {
             (Self::gamma_correct(f64::clamp(self.z, 0.0, 1.0)) * 255.0) as i32).as_bytes())
         .unwrap();
     }
-    pub fn zero() -> Self {
-        Vec3{ x: 0.0, y: 0.0, z: 0.0}
-    }
+    
     pub fn normalized(&self) -> Self {
         let inv_len = 1.0 / self.len();
         inv_len * self
@@ -82,6 +85,13 @@ impl Vec3 {
         let out_x = (self + &(cos_theta * n)) * idx;
         let out_y = -(1.0 - out_x.sq_len()).abs().sqrt() * n;
         out_x + out_y
+    }
+    pub fn cross(&self, other: &Vec3) -> Vec3 {
+        Vec3 { 
+            x: self.y * other.z - self.z * other.y, 
+            y: self.z * other.x - self.x * other.z,
+            z: self.x * other.y - self.y * other.x,
+        }
     }
 }
 impl Add for Vec3 {

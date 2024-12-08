@@ -1,5 +1,7 @@
 use std::{io::{BufWriter, Write}, ops::{Add, Div, Mul, Sub}};
 
+use rand::{random, thread_rng, Rng};
+
 #[derive(Clone)]
 pub struct Vec3 {
     pub x: f64,
@@ -36,6 +38,27 @@ impl Vec3 {
         self.x = -self.x;
         self.y = -self.y;
         self.z = -self.z;
+    }
+    pub fn random(min: f64, max: f64) -> Vec3 {
+        let mut rng = thread_rng();
+        Vec3 { x: rng.gen_range(min..max), y: rng.gen_range(min..max), z: rng.gen_range(min..max) }
+    }
+    pub fn random_unit_vec() -> Vec3 {
+        let mut vec = Self::random(-1.0, 1.0);
+        let mut lsq = vec.sq_len();
+        //we dont below 10^-160 to avoid f64::INFINITY after normalization
+        while lsq > 1.0 || lsq < 1e-160 {
+            vec = Self::random(-1.0, 1.0);
+            lsq = vec.sq_len()
+        }
+        vec.normalized()
+    }
+    pub fn random_unit_vec_on_hemisphere(vec: &Vec3) -> Vec3 {
+        let mut random = Self::random_unit_vec();
+        if Self::dot(&random, vec) <= 0.0 {
+            random.negate();
+        }
+        random
     }
 }
 impl Add for Vec3 {

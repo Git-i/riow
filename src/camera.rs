@@ -34,8 +34,9 @@ impl Camera {
         let unit_dir = ray.dir.clone().normalized();
         //from -1 - 1 to 0 - 1
         let a = unit_dir.y * 0.5 + 0.5;
-        if let Some(rec) = world.closest_hit(&ray, Interval::UNIVERSE.left_rebind(0.0)) { 
-            0.5 * &rec.normal + Vec3::from((0.5, 0.5, 0.5))
+        if let Some(rec) = world.closest_hit(&ray, Interval::UNIVERSE.left_rebind(0.0)) {
+            let reflection_dir = Vec3::random_unit_vec_on_hemisphere(&rec.normal);
+            Self::ray_color(Ray::new(rec.position, reflection_dir), world)
         } else {
             Vec3::from((0.5, 0.62, 0.84)) * a + Vec3::from((0.88, 0.9, 0.91)) * (1.0 - a)
         }

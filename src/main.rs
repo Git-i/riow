@@ -12,7 +12,7 @@ use ray::Ray;
 use camera::Camera;
 
 fn main() {
-    let cam = Camera::new(Vec3::zero(), 1.0, 500, 2.0, 1.6, 7);
+    let cam = Camera::new(Vec3::zero(), 1.0, 500, 2.0, 1.6, 1);
     
     let mut file = BufWriter::new(File::create("output.ppm").unwrap());
     
